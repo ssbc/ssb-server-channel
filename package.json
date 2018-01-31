@@ -1,14 +1,15 @@
 {
   "name": "ssb-server-channels",
   "version": "1.0.0",
-  "description": "",
+  "repository": "git@github.com:ssbc/ssb-server-channel.git",
+  "description": "A scuttlebot flumeview for all your channel related questions",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["scuttlebutt", "flumeview"],
+  "author": "mixmix",
+  "license": "AGPL-3.0",
   "dependencies": {
     "flumeview-reduce": "^1.3.12",
     "lodash": "^4.17.4"

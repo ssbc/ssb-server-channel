@@ -5,7 +5,7 @@ const set = require('lodash/set')
 const FLUME_VIEW_VERSION = 1.3
 
 module.exports = {
-  name: 'channels',
+  name: 'channel',
   version: require('./package.json').version,
   manifest: {
     get: 'async',
@@ -15,12 +15,13 @@ module.exports = {
     console.log('///// CHANNELS plugin loaded /////')
 
     const view = server._flumeUse(
-      'channels',
+      'channel',
       FlumeView(FLUME_VIEW_VERSION, reduce, map, null, initialState())
     )
 
     return {
       get: view.get,
+      subscription: view.get,
       stream: view.stream,
     }
   }
