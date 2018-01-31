@@ -63,6 +63,14 @@ Get the current state of the channel view. This will wait until the view is up t
 }
 ```
 
-### server.channel.get(cb)
+### server.channel.stream() => pull-stream source
+
+Be careful, this is a stream which provides:
+- an initial value
+- 'change' values (for all values after the initial value)
+- `{ sync: true }` values when the view is up to date with the db (if you use the `{live: true}` option)
+
+For details see : [https://github.com/flumedb/flumeview-reduce](https://github.com/flumedb/flumeview-reduce#dbnamestreamlive-boolean--pullsource)
+
 
 
