@@ -2,7 +2,7 @@ const FlumeView = require('flumeview-reduce')
 const get = require('lodash/get')
 const set = require('lodash/set')
 
-const FLUME_VIEW_VERSION = 1.5
+const FLUME_VIEW_VERSION = 1.10
 
 module.exports = {
   name: 'channel',
@@ -10,6 +10,7 @@ module.exports = {
   manifest: {
     get: 'async',
     stream: 'source',
+    subscription: 'async'
   },
   init: (server, config) => {
     console.log('///// CHANNELS plugin loaded /////')
@@ -55,7 +56,9 @@ function reduce(soFar, newSub) {
   process.stdout.write('c')
   const { channel, author, subscribed } = newSub
 
-  const channelSubs = get(soFar, [channel], new Set())
+  let channelSubs = get(soFar, [channel], [])
+
+  channelSubs = new Set(channelSubs)
 
   if (subscribed) {
     channelSubs.add(author)
@@ -63,7 +66,7 @@ function reduce(soFar, newSub) {
     channelSubs.delete(author)
   }
 
-  soFar[channel] = channelSubs
+  soFar[channel] = [...channelSubs]
 
   return soFar
 }
