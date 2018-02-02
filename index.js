@@ -2,7 +2,7 @@ const FlumeView = require('flumeview-reduce')
 const get = require('lodash/get')
 const set = require('lodash/set')
 
-const FLUME_VIEW_VERSION = 1.3
+const FLUME_VIEW_VERSION = 1.5
 
 module.exports = {
   name: 'channel',
@@ -15,7 +15,7 @@ module.exports = {
     console.log('///// CHANNELS plugin loaded /////')
 
     const view = server._flumeUse(
-      'channel',
+      'channels',
       FlumeView(FLUME_VIEW_VERSION, reduce, map, null, initialState())
     )
 
@@ -27,12 +27,12 @@ module.exports = {
   }
 }
 
-function initialState () {
+function initialState() {
   return {}
 }
 
 
-function map (msg) {
+function map(msg) {
   if (get(msg, 'value.content.type') !== 'channel') return null
 
   const author = msg.value.author
@@ -51,13 +51,17 @@ function map (msg) {
   }
 }
 
-function reduce (soFar, newSub) {
+function reduce(soFar, newSub) {
   process.stdout.write('c')
   const { channel, author, subscribed } = newSub
 
   const channelSubs = get(soFar, [channel], new Set())
-  if (subscribed) channelSubs.add(author)
-  else channelSubs.delete(author)
+
+  if (subscribed) {
+    channelSubs.add(author)
+  } else {
+    channelSubs.delete(author)
+  }
 
   soFar[channel] = channelSubs
 
