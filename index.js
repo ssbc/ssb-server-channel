@@ -2,7 +2,7 @@ const FlumeView = require('flumeview-reduce')
 const get = require('lodash/get')
 const set = require('lodash/set')
 
-const FLUME_VIEW_VERSION = 1.10
+const FLUME_VIEW_VERSION = 1.0
 
 module.exports = {
   name: 'channel',
