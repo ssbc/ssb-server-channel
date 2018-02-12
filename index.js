@@ -22,7 +22,7 @@ module.exports = {
 
     return {
       get: view.get,
-      subscription: view.get,
+      subscriptions: view.get,
       stream: view.stream,
     }
   }
