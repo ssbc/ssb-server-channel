@@ -10,10 +10,10 @@ module.exports = {
   manifest: {
     get: 'async',
     stream: 'source',
-    subscription: 'async'
+    subscriptions: 'async'
   },
   init: (server, config) => {
-    console.log('///// CHANNELS plugin loaded /////')
+    // console.log('///// CHANNELS plugin loaded /////')
 
     const view = server._flumeUse(
       'channels',
