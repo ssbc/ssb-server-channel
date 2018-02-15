@@ -24,7 +24,10 @@ Get the channels and who is subscribed where `cb(err, data)` is called with `dat
 
 ```js
 {
-  [ChannelName]: Set  // set of FeedIds of users subscribed to that channel 
+  [ChannelName]: [
+    [FeedId, Timestamp],
+    [FeedId, Timestamp],
+  ]
 }
 ```
 
@@ -32,22 +35,14 @@ e.g
 
 ```js
 {
-  'ssb-learning': Set { '@gaQw6z...', '@ye+QM09...' },
-  'brazil': Set { '@gaQw6z...' }
+  learning: [
+    ['@gaQw6z...', 1518663315275],
+    ['@ye+QM09...', 1518663311233]
+  ],
+  brazil: [
+    ['@gaQw6z...', 1518663129468],
+  ]
 }
-```
-
-Check your [Set methods **on MDN**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set)
-
-And if you really need an Array : 
-
-```js
-const s = new Set ()
-set.add('mixmix')
-set.add('soapdog')
-
-[...s]         // => ['mixmix', 'soapdog']
-Array.from(s)  // => ['mixmix', 'soapdog']
 ```
 
 
@@ -57,11 +52,7 @@ Get the current state of the channel view. This will wait until the view is up t
 
 `cb(err, data)` is a standard callback function where `data` is of the form:
 
-```js
-{
-  [ChannelName]: Set  // set of FeedIds of users subscribed to that channel 
-}
-```
+(same as `channel.subscriptions` at the moment)
 
 ### server.channel.stream() => pull-stream source
 

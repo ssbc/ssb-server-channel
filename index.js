@@ -14,8 +14,6 @@ module.exports = {
     reduce: 'sync'
   },
   init: (server, config) => {
-    // console.log('///// CHANNELS plugin loaded /////')
-
     const view = server._flumeUse(
       'channel',
       FlumeView(FLUME_VIEW_VERSION, reduce, map, null, initialState())
@@ -25,7 +23,7 @@ module.exports = {
       get: view.get,
       subscriptions: view.get,
       stream: view.stream,
-      reduce
+      reduce // TODO - remove this when flumeview offers something similar
     }
   }
 }
@@ -74,34 +72,4 @@ function reduce (soFar, newSub) {
 
   return soFar
 }
-
-// state: 
-// {
-//   [Channel]: [ Set
-//     FeedId
-//   ]
-// }
-
-
-// {
-//   'ssb-learning': [
-//     '@ye14....',
-//     '@weandre..',
-//   ],
-//   'brazil': [
-//     '@weandre..',
-//   ]
-// }
-
-// channel message: 
-// value: {
-//   author: FeedId,
-//   content: {
-//     {
-//       type: 'channel',
-//       channel: String,    // ssb-learning
-//       subscribed: Boolean
-//     }
-//   }
-// }
 
