@@ -2,7 +2,7 @@ const FlumeView = require('flumeview-reduce')
 const get = require('lodash/get')
 const set = require('lodash/set')
 
-const FLUME_VIEW_VERSION = 1.0
+const FLUME_VIEW_VERSION = 1.1
 
 module.exports = {
   name: 'channel',
@@ -10,13 +10,14 @@ module.exports = {
   manifest: {
     get: 'async',
     stream: 'source',
-    subscriptions: 'async'
+    subscriptions: 'async',
+    reduce: 'sync'
   },
   init: (server, config) => {
     // console.log('///// CHANNELS plugin loaded /////')
 
     const view = server._flumeUse(
-      'channels',
+      'channel',
       FlumeView(FLUME_VIEW_VERSION, reduce, map, null, initialState())
     )
 
@@ -24,6 +25,7 @@ module.exports = {
       get: view.get,
       subscriptions: view.get,
       stream: view.stream,
+      reduce
     }
   }
 }
@@ -32,12 +34,12 @@ function initialState() {
   return {}
 }
 
-
 function map(msg) {
   if (get(msg, 'value.content.type') !== 'channel') return null
 
   const author = msg.value.author
-  const channel = get(msg, 'value.content.channel')
+  const timestamp = msg.value.timestamp
+  const channel = get(msg, 'value.content.channel', '').replace(/^#/, '')
   const subscribed = get(msg, 'value.content.subscribed')
 
   if (typeof channel === undefined || typeof subscribed === undefined) {
@@ -46,27 +48,29 @@ function map(msg) {
   }
 
   return {
-    channel,
     author,
+    timestamp,
+    channel,
     subscribed
   }
 }
 
-function reduce(soFar, newSub) {
+function reduce (soFar, newSub) {
   process.stdout.write('c')
-  const { channel, author, subscribed } = newSub
+  const { author, timestamp, channel, subscribed } = newSub
 
-  let channelSubs = get(soFar, [channel], [])
+  var channelSubs = get(soFar, [channel], [])
+  var current = channelSubs.find(entry => entry[0] === author)
 
-  channelSubs = new Set(channelSubs)
+  // if current recorded statement was more recent than this 'newSub', ignore newSub
+  if (current && current[1] > timestamp) return soFar
 
-  if (subscribed) {
-    channelSubs.add(author)
-  } else {
-    channelSubs.delete(author)
-  }
+  // remove all subs entries for this author
+  channelSubs = channelSubs.filter(entry => entry[0] !== author)
 
-  soFar[channel] = [...channelSubs]
+  if (subscribed) channelSubs.push([author, Number(new Date())])
+
+  soFar[channel] = channelSubs
 
   return soFar
 }
